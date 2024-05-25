@@ -1,6 +1,9 @@
 # easyDialog
 
-### Note: You must use https://github.com/openmultiplayer/omp-stdlib otherwise, you'll get more warnings!!
+#Install
+```
+sampctl install RaP-SoR/easyDialog
+```
 
 The purpose of this include is to make dialogs easier to use in general.
 
