@@ -1,15 +1,16 @@
 
 /*
-	Dialog Response
+	Dialog Response — RaP-SoR open.mp packaging
+
+	Based on https://github.com/devbluen/easyDialog (1.0.4)
+	Original idea: Awsomedude / Emmet_
 
 	API:
-	- Dialog_Create(playerid, const callback[], DIALOG_STYLE:style, const title[], body[], const button1[], const button2[], {Float, _}:...);	// Create Protected Dialog
-	- Dialog_Show(playerid, const callback[], DIALOG_STYLE:style, const title[], body[], const button1[], const button2[], {Float, _}:...); // Same Dialog_Open
+	- Dialog_Create(playerid, const callback[], DIALOG_STYLE:style, const title[], body[], const button1[], const button2[], {Float, _}:...);
+	- Dialog_Show(playerid, const callback[], DIALOG_STYLE:style, const title[], body[], const button1[], const button2[], {Float, _}:...);
 	- Dialog_Close(playerid);
-	- Dialog_ReShow(playerid, const error[] = ""); // Reopen the same dialog with additional message or not
+	- Dialog_ReShow(playerid, const error[] = "");
 	- bool:Dialog_Created(playerid);
-
-		Created by https://github.com/devbluen/easyDialog
 */
 
 
@@ -57,6 +58,10 @@ static const
 	DIALOG_PROTECTED_ID = 32762
 ;
 
+// open.mp / modern pawncc: tagged returns must be known before first use
+forward bool:Dialog_Created(playerid);
+forward DIALOG_STYLE:Dialog_GetStyle(playerid);
+
 hook OnPlayerDisconnect(playerid, reason) {
 
 	Dialog_Reset(playerid);
@@ -101,22 +106,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
     return Y_HOOKS_BREAK_RETURN_1;
 }
 
-
-
-/*
-					.oooooo..o ooooooooooooo   .oooooo.     .oooooo.   oooo    oooo  .oooooo..o 
-					d8P'    `Y8 8'   888   `8  d8P'  `Y8b   d8P'  `Y8b  `888   .8P'  d8P'    `Y8 
-					Y88bo.           888      888      888 888           888  d8'    Y88bo.      
-					 `"Y8888o.       888      888      888 888           88888[       `"Y8888o.  
-						 `"Y88b      888      888      888 888           888`88b.         `"Y88b 
-					oo     .d8P      888      `88b    d88' `88b    ooo   888  `88b.  oo     .d8P 
-					8""88888P'      o888o      `Y8bood8P'   `Y8bood8P'  o888o  o888o 8""88888P'  
-*/
- 
 stock Dialog_Create(playerid, const callback[], DIALOG_STYLE:style, const title[], const body[], const button1[], const button2[], {Float, _}:...) {
 
 	new 
-		error[192],
+		dlg_error[192],
 		bodyBuff[4096]
 	;
 
@@ -149,9 +142,9 @@ stock Dialog_Create(playerid, const callback[], DIALOG_STYLE:style, const title[
 	Dialog_SetButton2(playerid, button2);
 	Dialog_SetCreated(playerid, true);
 
-	Dialog_GetError(playerid, error);
-	if(!isnull(error))
-		strcat(bodyBuff, error);
+	Dialog_GetError(playerid, dlg_error);
+	if(!isnull(dlg_error))
+		strcat(bodyBuff, dlg_error);
 
 	return ShowPlayerDialog(playerid, DIALOG_PROTECTED_ID, style, title, bodyBuff, button1, button2);
 }
@@ -251,16 +244,16 @@ static stock Dialog_SetLists(playerid, value)
 stock bool:Dialog_Created(playerid)
 	return e_Dialog[playerid][E_DIALOG_CREATED];
 
-static stock Dialog_SetCreated(playerid, bool:status)
-	e_Dialog[playerid][E_DIALOG_CREATED] = status;
+static stock Dialog_SetCreated(playerid, bool:created_status)
+	e_Dialog[playerid][E_DIALOG_CREATED] = created_status;
 
-static stock Dialog_CountChars(const string[], const sub[], bool:ignorecase = false, bool:count_overlapped = false) {
+static stock Dialog_CountChars(const haystack[], const sub[], bool:ignorecase = false, bool:count_overlapped = false) {
 	new
 		increment = count_overlapped ? 1 : strlen(sub),
 		pos = -increment,
 		count = 0;
 	
-	while (-1 != (pos = strfind(string, sub, ignorecase, pos + increment)))
+	while (-1 != (pos = strfind(haystack, sub, ignorecase, pos + increment)))
 		count++;
 	
 	return count;
