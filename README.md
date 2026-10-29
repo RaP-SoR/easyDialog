@@ -1,51 +1,25 @@
-# 🌍 easyDialog
-This is the modified easyDialog with some perks and new protections. An original modification by Awsomedude.
-Idea taken from [Awsomedude/easyDialog](https://github.com/Awsomedude/easyDialog), I just made other modifications and new additions.
+# easyDialog (RaP-SoR / open.mp)
 
-# 📁 Dependencies
-- [Library YSI](https://github.com/pawn-lang/YSI-Includes)
+Fork of [devbluen/easyDialog](https://github.com/devbluen/easyDialog) with open.mp / modern `pawncc` packaging.
 
-# 🫧 Protections
-- Protects input against malicious characters.
-- Protects the dialog response entirely on the server side.
-- Protects against invalid listitem responses from the client.
-- Protects the player from using a hidden dialog.
+Upstream `1.0.4` brings input/listitem protections and `Dialog_ReShow`.
+This fork adds compiler-clean fixes so consumers do not need post-`ensure` local patches.
 
-# ⚠️ Notes
-- You can create custom callbacks for your dialogs, see the example below.
-```pawn
-Dialog:CUSTOM_DIALOG(playerid, response, listitem, inputtext[]) {
+## Install (sampctl)
 
-    your code
-    return true;
-}
-
-Dialog_Show(playerid, CUSTOM_DIALOG, style, "title", "infos", "Confirm", "Cancel");
 ```
-- You can also redisplay the dialog with an error message, see the example below
-- This ReShow function will keep the old information and add an error message to the end of the dialog with your custom message.
-```pawn
-Dialog:CUSTOM_DIALOG(playerid, response, listitem, inputtext[]) {
-
-    if(response) {
-
-        if(!strlen(inputtext))
-            return Dialog_ReShow(playerid, "You need to put some information");
-
-    }
-    return true;
-}
-
-Dialog_Show(playerid, CUSTOM_DIALOG, DIALOG_STYLE_PASSWORD, "Password", "Your password", "Login", "Cancel");
+sampctl install RaP-SoR/easyDialog:1.1.0
 ```
 
-# 📝 Functions
-- Dialog_Create(playerid, const callback[], DIALOG_STYLE:style, const title[], body[], const button1[], const button2[], {Float, _}:...);
-- Dialog_Show(playerid, const callback[], DIALOG_STYLE:style, const title[], body[], const button1[], const button2[], {Float, _}:...);     // Same Dialog_Open
-- Dialog_Close(playerid);
-- Dialog_ReShow(playerid, const error[] = "");     // Reopen the same dialog with additional message or not
-- bool:Dialog_Created(playerid);
+Requires YSI (`y_hooks`, `y_va`). Include YSI **before** `<easyDialog>`.
 
-# 👋🏼 Credits
-Even though I wrote the code completely, the initial idea is entirely Awsomedude, I just made the system more "gourmet" and added new protections.
-You can build on the project by porting it to open-mp, I'd love to see your contribution.
+## open.mp fixes (vs upstream 1.0.4)
+
+- Forward declarations for tagged returns (`bool:`, `DIALOG_STYLE:`)
+- Renamed shadowed locals (`status` → `created_status`, `string` → `haystack`)
+
+## Credits
+
+- Emmet_ / Awsomedude — original idea
+- devonblue — protections and `Dialog_ReShow`
+- RaP-SoR — open.mp sampctl packaging

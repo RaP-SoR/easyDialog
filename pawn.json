@@ -1,0 +1,12 @@
+{
+	"user": "RaP-SoR",
+	"repo": "easyDialog",
+	"entry": "test.pwn",
+	"output": "test.amx",
+	"dependencies": [
+		"openmultiplayer/omp-stdlib",
+		"pawn-lang/samp-stdlib@open.mp",
+		"pawn-lang/pawn-stdlib@open.mp",
+		"RaP-SoR/YSI-Includes:v5.10-omp"
+	]
+}
